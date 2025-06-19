@@ -85,6 +85,58 @@ const COMPREHENSIVE_EMOTIONS: EmotionData[] = [
   { name: 'Mischievous', emoji: '😈', intensity: 0, color: 'bg-purple-400', category: 'Complex' }
 ];
 
+// Advanced emotion transformation templates
+const EMOTION_TRANSFORMATIONS = {
+  Happy: {
+    starters: ['I'm so happy to share that', 'It brings me joy to say', 'I'm delighted to tell you'],
+    replacements: { 'like': 'love', 'okay': 'wonderful', 'good': 'amazing' },
+    endings: ['😊', '✨', '🌟'],
+    intensifiers: ['really', 'absolutely', 'completely']
+  },
+  Sad: {
+    starters: ['It saddens me to say', 'With a heavy heart', 'I wish I could say otherwise, but'],
+    replacements: { 'like': 'wish I could be with', 'want': 'long for', 'need': 'desperately need' },
+    endings: ['😢', '💔', '😔'],
+    intensifiers: ['deeply', 'profoundly', 'truly']
+  },
+  Nervous: {
+    starters: ['I\'m nervous to tell you this, but', 'This might sound awkward, but', 'I hope this doesn\'t come across wrong, but'],
+    replacements: { 'like': 'have feelings for', 'want': 'hope for', 'think': 'believe' },
+    endings: ['😰', '🥺', '😅'],
+    intensifiers: ['kind of', 'sort of', 'maybe']
+  },
+  Excited: {
+    starters: ['I\'m so excited to tell you', 'I can\'t contain my excitement', 'This is amazing -'],
+    replacements: { 'like': 'absolutely adore', 'want': 'can\'t wait for', 'good': 'incredible' },
+    endings: ['🤗', '🎉', '🚀'],
+    intensifiers: ['incredibly', 'extremely', 'super']
+  },
+  Romantic: {
+    starters: ['From my heart, I want to say', 'You mean so much to me', 'My feelings tell me'],
+    replacements: { 'like': 'am deeply attracted to', 'girl': 'beautiful soul', 'person': 'amazing person' },
+    endings: ['💕', '❤️', '🌹'],
+    intensifiers: ['deeply', 'truly', 'genuinely']
+  },
+  Confident: {
+    starters: ['I want to be clear about this', 'Let me be direct', 'I\'m confident in saying'],
+    replacements: { 'like': 'am interested in', 'think': 'know', 'maybe': 'definitely' },
+    endings: ['💪', '👑', '🔥'],
+    intensifiers: ['absolutely', 'definitely', 'certainly']
+  },
+  Professional: {
+    starters: ['I would like to express', 'I wish to communicate', 'Allow me to share'],
+    replacements: { 'like': 'have professional interest in', 'want': 'would appreciate', 'need': 'require' },
+    endings: ['💼', '🤝', '📋'],
+    intensifiers: ['professionally', 'formally', 'respectfully']
+  },
+  Flirty: {
+    starters: ['You know what?', 'Between you and me', 'I have to admit'],
+    replacements: { 'like': 'am quite fond of', 'want': 'desire', 'think': 'feel' },
+    endings: ['😉', '😘', '💋'],
+    intensifiers: ['quite', 'rather', 'pretty much']
+  }
+};
+
 const EMOTION_EMOJIS = {
   Happy: ['😊', '😄', '🙂', '😃', '✨'],
   Sad: ['😢', '😔', '💔', '😞'],
@@ -129,12 +181,41 @@ export const EmotionAnalyzer = () => {
 
     const randomEmoji = emotionEmojis[Math.floor(Math.random() * emotionEmojis.length)];
     
-    // Add emoji at the end with some probability
+    // Add emoji with probability
     if (Math.random() > 0.3) {
       return `${text} ${randomEmoji}`;
     }
     
     return text;
+  };
+
+  const transformTextWithEmotion = (text: string, emotion: string, intensity: number): string => {
+    const transformation = EMOTION_TRANSFORMATIONS[emotion as keyof typeof EMOTION_TRANSFORMATIONS];
+    if (!transformation) return text;
+
+    let transformedText = text.toLowerCase();
+
+    // Apply word replacements based on intensity
+    if (intensity > 30) {
+      Object.entries(transformation.replacements).forEach(([from, to]) => {
+        const regex = new RegExp(`\\b${from}\\b`, 'gi');
+        transformedText = transformedText.replace(regex, to);
+      });
+    }
+
+    // Add starter phrases for high intensity
+    if (intensity > 60 && transformation.starters) {
+      const starter = transformation.starters[Math.floor(Math.random() * transformation.starters.length)];
+      transformedText = `${starter} ${transformedText}`;
+    }
+
+    // Add intensifiers
+    if (intensity > 40 && transformation.intensifiers) {
+      const intensifier = transformation.intensifiers[Math.floor(Math.random() * transformation.intensifiers.length)];
+      transformedText = transformedText.replace(/\b(am|is|are|feel|think)\b/, `$1 ${intensifier}`);
+    }
+
+    return transformedText;
   };
 
   const simulateAdvancedAI = async (text: string, selectedEmotions: EmotionData[], contextInfo: string, language: string): Promise<RephrasedVersion[]> => {
@@ -147,49 +228,34 @@ export const EmotionAnalyzer = () => {
 
     const versions: RephrasedVersion[] = [];
 
-    for (let i = 0; i < 4; i++) {
-      const dominantEmotion = selectedEmotions.reduce((max, current) => 
-        current.intensity > max.intensity ? current : max
-      );
+    // Sort emotions by intensity to get dominant emotion
+    const sortedEmotions = selectedEmotions.sort((a, b) => b.intensity - a.intensity);
+    const dominantEmotion = sortedEmotions[0];
 
+    for (let i = 0; i < 4; i++) {
       let rephrasedText = text;
       
       const emotionBlend = selectedEmotions.map(e => `${e.name}(${e.intensity}%)`);
       
-      // Apply emotion transformations based on intensity and combinations
-      if (dominantEmotion.name === 'Nervous' && dominantEmotion.intensity > 50) {
-        const nervousTransforms = [
-          "I've been meaning to tell you something...",
-          "This might sound awkward, but...",
-          "I hope this doesn't come across wrong...",
-          "I'm not sure how to say this, but..."
-        ];
-        rephrasedText = nervousTransforms[i % nervousTransforms.length] + " " + text.toLowerCase();
-      }
+      // Apply primary emotion transformation
+      rephrasedText = transformTextWithEmotion(rephrasedText, dominantEmotion.name, dominantEmotion.intensity);
 
-      if (dominantEmotion.name === 'Romantic' && dominantEmotion.intensity > 40) {
-        rephrasedText = rephrasedText
-          .replace(/like/gi, ['have feelings for', 'am drawn to', 'care deeply about', 'am falling for'][i % 4])
-          .replace(/girl/gi, ['amazing person', 'wonderful soul', 'special someone', 'beautiful heart'][i % 4]);
-      }
-
-      if (dominantEmotion.name === 'Confident' && dominantEmotion.intensity > 60) {
-        const confidentStarters = [
-          "I want you to know that",
-          "I'm certain about this -",
-          "Let me be direct:",
-          "I need to tell you something important:"
-        ];
-        rephrasedText = confidentStarters[i % confidentStarters.length] + " " + text.toLowerCase();
-      }
-
-      if (dominantEmotion.name === 'Excited' && dominantEmotion.intensity > 30) {
-        rephrasedText = rephrasedText.replace(/\./g, '!');
+      // Apply secondary emotions if they exist
+      if (sortedEmotions.length > 1) {
+        const secondaryEmotion = sortedEmotions[1];
+        if (secondaryEmotion.intensity > 20) {
+          rephrasedText = transformTextWithEmotion(rephrasedText, secondaryEmotion.name, secondaryEmotion.intensity * 0.6);
+        }
       }
 
       // Apply context-based modifications
-      if (contextInfo.includes('shy')) {
-        rephrasedText = rephrasedText.replace(/I /g, 'I honestly ');
+      if (contextInfo.toLowerCase().includes('shy')) {
+        rephrasedText = rephrasedText.replace(/\bI\b/g, 'I honestly');
+        rephrasedText = `Um, ${rephrasedText}`;
+      }
+
+      if (contextInfo.toLowerCase().includes('work') || contextInfo.toLowerCase().includes('professional')) {
+        rephrasedText = rephrasedText.replace(/\blike\b/gi, 'have professional interest in');
       }
 
       // Add emojis based on emotion
@@ -197,8 +263,24 @@ export const EmotionAnalyzer = () => {
 
       // Ensure proper formatting
       rephrasedText = rephrasedText.charAt(0).toUpperCase() + rephrasedText.slice(1);
-      if (!/[.!?]$/.test(rephrasedText.replace(/[😀-🿿]|\s/g, ''))) {
+      if (!/[.!?]$/.test(rephrasedText.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, ''))) {
         rephrasedText += '.';
+      }
+
+      // Create variation for each version
+      if (i === 1) {
+        // More casual version
+        rephrasedText = rephrasedText.replace(/\bI am\b/gi, "I'm");
+        rephrasedText = rephrasedText.replace(/\bcannot\b/gi, "can't");
+      } else if (i === 2) {
+        // More formal version
+        rephrasedText = rephrasedText.replace(/\bI'm\b/gi, "I am");
+        rephrasedText = rephrasedText.replace(/\bcan't\b/gi, "cannot");
+      } else if (i === 3) {
+        // More expressive version
+        if (dominantEmotion.intensity > 50) {
+          rephrasedText = rephrasedText.replace(/\./g, '!');
+        }
       }
 
       versions.push({
