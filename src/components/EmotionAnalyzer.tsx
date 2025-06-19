@@ -88,7 +88,7 @@ const COMPREHENSIVE_EMOTIONS: EmotionData[] = [
 // Advanced emotion transformation templates
 const EMOTION_TRANSFORMATIONS = {
   Happy: {
-    starters: ['I'm so happy to share that', 'It brings me joy to say', 'I'm delighted to tell you'],
+    starters: ["I'm so happy to share that", "It brings me joy to say", "I'm delighted to tell you"],
     replacements: { 'like': 'love', 'okay': 'wonderful', 'good': 'amazing' },
     endings: ['😊', '✨', '🌟'],
     intensifiers: ['really', 'absolutely', 'completely']
@@ -100,14 +100,14 @@ const EMOTION_TRANSFORMATIONS = {
     intensifiers: ['deeply', 'profoundly', 'truly']
   },
   Nervous: {
-    starters: ['I\'m nervous to tell you this, but', 'This might sound awkward, but', 'I hope this doesn\'t come across wrong, but'],
+    starters: ["I'm nervous to tell you this, but", "This might sound awkward, but", "I hope this doesn't come across wrong, but"],
     replacements: { 'like': 'have feelings for', 'want': 'hope for', 'think': 'believe' },
     endings: ['😰', '🥺', '😅'],
     intensifiers: ['kind of', 'sort of', 'maybe']
   },
   Excited: {
-    starters: ['I\'m so excited to tell you', 'I can\'t contain my excitement', 'This is amazing -'],
-    replacements: { 'like': 'absolutely adore', 'want': 'can\'t wait for', 'good': 'incredible' },
+    starters: ["I'm so excited to tell you", "I can't contain my excitement", "This is amazing -"],
+    replacements: { 'like': 'absolutely adore', 'want': "can't wait for", 'good': 'incredible' },
     endings: ['🤗', '🎉', '🚀'],
     intensifiers: ['incredibly', 'extremely', 'super']
   },
@@ -118,7 +118,7 @@ const EMOTION_TRANSFORMATIONS = {
     intensifiers: ['deeply', 'truly', 'genuinely']
   },
   Confident: {
-    starters: ['I want to be clear about this', 'Let me be direct', 'I\'m confident in saying'],
+    starters: ['I want to be clear about this', 'Let me be direct', "I'm confident in saying"],
     replacements: { 'like': 'am interested in', 'think': 'know', 'maybe': 'definitely' },
     endings: ['💪', '👑', '🔥'],
     intensifiers: ['absolutely', 'definitely', 'certainly']
