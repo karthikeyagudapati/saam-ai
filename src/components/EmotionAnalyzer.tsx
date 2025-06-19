@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -30,6 +29,7 @@ interface Language {
   code: string;
   name: string;
   flag: string;
+  transliteration?: boolean;
 }
 
 const LANGUAGES: Language[] = [
@@ -44,45 +44,62 @@ const LANGUAGES: Language[] = [
   { code: 'ko', name: '한국어', flag: '🇰🇷' },
   { code: 'zh', name: '中文', flag: '🇨🇳' },
   { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' }
+  { code: 'hi', name: 'हिन्दी (Hindi)', flag: '🇮🇳', transliteration: true },
+  { code: 'te', name: 'తెలుగు (Telugu)', flag: '🇮🇳', transliteration: true },
+  { code: 'ta', name: 'தமிழ் (Tamil)', flag: '🇮🇳', transliteration: true },
+  { code: 'kn', name: 'ಕನ್ನಡ (Kannada)', flag: '🇮🇳', transliteration: true },
+  { code: 'ml', name: 'മലയാളം (Malayalam)', flag: '🇮🇳', transliteration: true },
+  { code: 'bn', name: 'বাংলা (Bengali)', flag: '🇮🇳', transliteration: true },
+  { code: 'gu', name: 'ગુજરાતી (Gujarati)', flag: '🇮🇳', transliteration: true },
+  { code: 'mr', name: 'मराठी (Marathi)', flag: '🇮🇳', transliteration: true },
+  { code: 'pa', name: 'ਪੰਜਾਬੀ (Punjabi)', flag: '🇮🇳', transliteration: true },
+  { code: 'or', name: 'ଓଡ଼ିଆ (Odia)', flag: '🇮🇳', transliteration: true },
+  { code: 'ne', name: 'नेपाली (Nepali)', flag: '🇳🇵' },
+  { code: 'si', name: 'සිංහල (Sinhala)', flag: '🇱🇰' },
+  { code: 'my', name: 'မြန်မာ (Myanmar)', flag: '🇲🇲' },
+  { code: 'th', name: 'ไทย (Thai)', flag: '🇹🇭' },
+  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
+  { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩' },
+  { code: 'ms', name: 'Bahasa Melayu', flag: '🇲🇾' },
+  { code: 'tl', name: 'Filipino', flag: '🇵🇭' }
 ];
 
 const COMPREHENSIVE_EMOTIONS: EmotionData[] = [
   // Primary Emotions
-  { name: 'Happy', emoji: '😊', intensity: 0, color: 'bg-purple-500', category: 'Primary' },
-  { name: 'Sad', emoji: '😢', intensity: 0, color: 'bg-purple-400', category: 'Primary' },
-  { name: 'Angry', emoji: '😡', intensity: 0, color: 'bg-purple-600', category: 'Primary' },
-  { name: 'Fear', emoji: '😨', intensity: 0, color: 'bg-purple-500', category: 'Primary' },
-  { name: 'Surprise', emoji: '😲', intensity: 0, color: 'bg-purple-400', category: 'Primary' },
-  { name: 'Disgust', emoji: '🤢', intensity: 0, color: 'bg-purple-600', category: 'Primary' },
+  { name: 'Happy', emoji: '😊', intensity: 0, color: 'bg-blue-500', category: 'Primary' },
+  { name: 'Sad', emoji: '😢', intensity: 0, color: 'bg-blue-400', category: 'Primary' },
+  { name: 'Angry', emoji: '😡', intensity: 0, color: 'bg-blue-600', category: 'Primary' },
+  { name: 'Fear', emoji: '😨', intensity: 0, color: 'bg-blue-500', category: 'Primary' },
+  { name: 'Surprise', emoji: '😲', intensity: 0, color: 'bg-blue-400', category: 'Primary' },
+  { name: 'Disgust', emoji: '🤢', intensity: 0, color: 'bg-blue-600', category: 'Primary' },
   
   // Social Emotions
-  { name: 'Romantic', emoji: '💕', intensity: 0, color: 'bg-purple-500', category: 'Social' },
-  { name: 'Flirty', emoji: '😉', intensity: 0, color: 'bg-purple-400', category: 'Social' },
-  { name: 'Nervous', emoji: '😰', intensity: 0, color: 'bg-purple-600', category: 'Social' },
-  { name: 'Excited', emoji: '🤗', intensity: 0, color: 'bg-purple-500', category: 'Social' },
-  { name: 'Empathetic', emoji: '🤝', intensity: 0, color: 'bg-purple-400', category: 'Social' },
-  { name: 'Apologetic', emoji: '🙏', intensity: 0, color: 'bg-purple-600', category: 'Social' },
+  { name: 'Romantic', emoji: '💕', intensity: 0, color: 'bg-blue-500', category: 'Social' },
+  { name: 'Flirty', emoji: '😉', intensity: 0, color: 'bg-blue-400', category: 'Social' },
+  { name: 'Nervous', emoji: '😰', intensity: 0, color: 'bg-blue-600', category: 'Social' },
+  { name: 'Excited', emoji: '🤗', intensity: 0, color: 'bg-blue-500', category: 'Social' },
+  { name: 'Empathetic', emoji: '🤝', intensity: 0, color: 'bg-blue-400', category: 'Social' },
+  { name: 'Apologetic', emoji: '🙏', intensity: 0, color: 'bg-blue-600', category: 'Social' },
   
   // Professional Emotions
-  { name: 'Professional', emoji: '💼', intensity: 0, color: 'bg-purple-500', category: 'Professional' },
-  { name: 'Confident', emoji: '💪', intensity: 0, color: 'bg-purple-400', category: 'Professional' },
-  { name: 'Diplomatic', emoji: '🤵', intensity: 0, color: 'bg-purple-600', category: 'Professional' },
-  { name: 'Assertive', emoji: '👑', intensity: 0, color: 'bg-purple-500', category: 'Professional' },
+  { name: 'Professional', emoji: '💼', intensity: 0, color: 'bg-blue-500', category: 'Professional' },
+  { name: 'Confident', emoji: '💪', intensity: 0, color: 'bg-blue-400', category: 'Professional' },
+  { name: 'Diplomatic', emoji: '🤵', intensity: 0, color: 'bg-blue-600', category: 'Professional' },
+  { name: 'Assertive', emoji: '👑', intensity: 0, color: 'bg-blue-500', category: 'Professional' },
   
   // Casual Emotions
-  { name: 'Casual', emoji: '😎', intensity: 0, color: 'bg-purple-400', category: 'Casual' },
-  { name: 'Humorous', emoji: '😄', intensity: 0, color: 'bg-purple-600', category: 'Casual' },
-  { name: 'Sarcastic', emoji: '😏', intensity: 0, color: 'bg-purple-500', category: 'Casual' },
-  { name: 'Friendly', emoji: '🌟', intensity: 0, color: 'bg-purple-400', category: 'Casual' },
+  { name: 'Casual', emoji: '😎', intensity: 0, color: 'bg-blue-400', category: 'Casual' },
+  { name: 'Humorous', emoji: '😄', intensity: 0, color: 'bg-blue-600', category: 'Casual' },
+  { name: 'Sarcastic', emoji: '😏', intensity: 0, color: 'bg-blue-500', category: 'Casual' },
+  { name: 'Friendly', emoji: '🌟', intensity: 0, color: 'bg-blue-400', category: 'Casual' },
   
   // Complex Emotions
-  { name: 'Melancholy', emoji: '🌙', intensity: 0, color: 'bg-purple-600', category: 'Complex' },
-  { name: 'Euphoric', emoji: '🚀', intensity: 0, color: 'bg-purple-500', category: 'Complex' },
-  { name: 'Contemplative', emoji: '🤔', intensity: 0, color: 'bg-purple-400', category: 'Complex' },
-  { name: 'Passionate', emoji: '🔥', intensity: 0, color: 'bg-purple-600', category: 'Complex' },
-  { name: 'Serene', emoji: '🕊️', intensity: 0, color: 'bg-purple-500', category: 'Complex' },
-  { name: 'Mischievous', emoji: '😈', intensity: 0, color: 'bg-purple-400', category: 'Complex' }
+  { name: 'Melancholy', emoji: '🌙', intensity: 0, color: 'bg-blue-600', category: 'Complex' },
+  { name: 'Euphoric', emoji: '🚀', intensity: 0, color: 'bg-blue-500', category: 'Complex' },
+  { name: 'Contemplative', emoji: '🤔', intensity: 0, color: 'bg-blue-400', category: 'Complex' },
+  { name: 'Passionate', emoji: '🔥', intensity: 0, color: 'bg-blue-600', category: 'Complex' },
+  { name: 'Serene', emoji: '🕊️', intensity: 0, color: 'bg-blue-500', category: 'Complex' },
+  { name: 'Mischievous', emoji: '😈', intensity: 0, color: 'bg-blue-400', category: 'Complex' }
 ];
 
 // Advanced emotion transformation templates
@@ -335,8 +352,10 @@ export const EmotionAnalyzer = () => {
     ? emotions 
     : emotions.filter(e => e.category === selectedCategory);
 
+  const selectedLanguageData = LANGUAGES.find(lang => lang.code === selectedLanguage);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 p-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
@@ -345,7 +364,7 @@ export const EmotionAnalyzer = () => {
             </span>
           </h1>
           <p className="text-xl text-white/90 mb-4">Smart AI Message - Advanced Emotion Processing Engine ✨</p>
-          <Badge className="bg-white text-purple-700 px-4 py-2 font-bold">
+          <Badge className="bg-white text-blue-700 px-4 py-2 font-bold">
             🚀 100% FREE - All Features Unlocked
           </Badge>
         </div>
@@ -354,7 +373,7 @@ export const EmotionAnalyzer = () => {
           {/* Input Section */}
           <Card className="bg-white border-gray-200 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-purple-700 flex items-center gap-2">
+              <CardTitle className="text-blue-700 flex items-center gap-2">
                 <Brain className="w-6 h-6" />
                 Message Input & Emotion Selection 📝
               </CardTitle>
@@ -366,7 +385,7 @@ export const EmotionAnalyzer = () => {
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder="Enter your message here... 💭"
-                  className="border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                   rows={4}
                 />
               </div>
@@ -377,20 +396,35 @@ export const EmotionAnalyzer = () => {
                   value={context}
                   onChange={(e) => setContext(e.target.value)}
                   placeholder="Provide context for better results... 🎯"
-                  className="border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="text-gray-700 block mb-2 font-medium">Language 🌍</label>
+                <label className="text-gray-700 block mb-2 font-medium">
+                  Language 🌍 
+                  {selectedLanguageData?.transliteration && (
+                    <span className="text-sm text-blue-600 ml-2">
+                      (Supports English transliteration)
+                    </span>
+                  )}
+                </label>
                 <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                  <SelectTrigger className="border-gray-300 focus:border-purple-500 focus:ring-purple-500">
+                  <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-60 overflow-y-auto">
                     {LANGUAGES.map(lang => (
                       <SelectItem key={lang.code} value={lang.code}>
-                        {lang.flag} {lang.name}
+                        <div className="flex items-center gap-2">
+                          <span>{lang.flag}</span>
+                          <span>{lang.name}</span>
+                          {lang.transliteration && (
+                            <Badge variant="outline" className="text-xs">
+                              English script
+                            </Badge>
+                          )}
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -407,7 +441,7 @@ export const EmotionAnalyzer = () => {
                       variant={selectedCategory === category ? "default" : "outline"}
                       onClick={() => setSelectedCategory(category)}
                       className={selectedCategory === category 
-                        ? "bg-purple-600 hover:bg-purple-700 text-white" 
+                        ? "bg-blue-600 hover:bg-blue-700 text-white" 
                         : "border-gray-300 text-gray-700 hover:bg-gray-50"
                       }
                     >
@@ -425,7 +459,7 @@ export const EmotionAnalyzer = () => {
                       key={emotion.name}
                       className={`p-4 rounded-lg border-2 transition-all ${
                         emotion.intensity > 0 
-                          ? 'border-purple-400 bg-purple-50' 
+                          ? 'border-blue-400 bg-blue-50' 
                           : 'border-gray-200 bg-gray-50'
                       }`}
                     >
@@ -433,7 +467,7 @@ export const EmotionAnalyzer = () => {
                         <span className="text-gray-800 font-medium">
                           {emotion.emoji} {emotion.name}
                         </span>
-                        <span className="text-purple-600 text-sm font-bold">
+                        <span className="text-blue-600 text-sm font-bold">
                           {emotion.intensity}%
                         </span>
                       </div>
@@ -452,7 +486,7 @@ export const EmotionAnalyzer = () => {
               <Button
                 onClick={generateRephrasedVersions}
                 disabled={isProcessing}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-lg py-6"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-6"
               >
                 {isProcessing ? (
                   <>
@@ -472,7 +506,7 @@ export const EmotionAnalyzer = () => {
           {/* Output Section */}
           <Card className="bg-white border-gray-200 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-purple-700 flex items-center gap-2">
+              <CardTitle className="text-blue-700 flex items-center gap-2">
                 <Zap className="w-6 h-6" />
                 AI-Generated Versions 🎯
               </CardTitle>
@@ -480,7 +514,7 @@ export const EmotionAnalyzer = () => {
             <CardContent>
               {isProcessing ? (
                 <div className="text-center py-12">
-                  <RefreshCw className="w-12 h-12 animate-spin text-purple-600 mx-auto mb-4" />
+                  <RefreshCw className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
                   <p className="text-gray-600">Advanced AI models are processing your emotions... 🧠</p>
                   <p className="text-gray-500 text-sm mt-2">Neural networks analyzing sentiment patterns ⚡</p>
                 </div>
@@ -490,10 +524,10 @@ export const EmotionAnalyzer = () => {
                     <div key={version.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-2">
-                          <Badge className="bg-purple-600 text-white">
+                          <Badge className="bg-blue-600 text-white">
                             Version {version.id}
                           </Badge>
-                          <Badge variant="outline" className="border-purple-300 text-purple-700">
+                          <Badge variant="outline" className="border-blue-300 text-blue-700">
                             {version.dominantEmotion}
                           </Badge>
                           <Badge variant="outline" className="border-green-500 text-green-600">
@@ -503,7 +537,7 @@ export const EmotionAnalyzer = () => {
                         <Button
                           size="sm"
                           onClick={() => copyToClipboard(version.text)}
-                          className="bg-purple-600 hover:bg-purple-700 text-white"
+                          className="bg-blue-600 hover:bg-blue-700 text-white"
                         >
                           <Copy className="w-4 h-4" />
                         </Button>
@@ -522,7 +556,7 @@ export const EmotionAnalyzer = () => {
                 </div>
               ) : (
                 <div className="text-center py-12 text-gray-600">
-                  <Sparkles className="w-16 h-16 mx-auto mb-4 text-purple-600" />
+                  <Sparkles className="w-16 h-16 mx-auto mb-4 text-blue-600" />
                   <p>Select emotions and generate versions to see AI-powered results 🚀</p>
                   <p className="text-sm mt-2">Advanced neural networks ready to process your message 🤖</p>
                 </div>
@@ -534,12 +568,12 @@ export const EmotionAnalyzer = () => {
         {/* Technical Specifications */}
         <Card className="mt-8 bg-white border-gray-200 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-purple-700 text-center">🧠 Advanced AI Capabilities</CardTitle>
+            <CardTitle className="text-blue-700 text-center">🧠 Advanced AI Capabilities</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-3 gap-6 text-gray-700">
+            <div className="grid md:grid-cols-4 gap-6 text-gray-700">
               <div className="text-center">
-                <h3 className="font-bold text-purple-600 mb-2">Neural Networks 🔬</h3>
+                <h3 className="font-bold text-blue-600 mb-2">Neural Networks 🔬</h3>
                 <ul className="text-sm space-y-1">
                   <li>✅ Transformer Architecture</li>
                   <li>✅ BERT-based Sentiment Analysis</li>
@@ -548,7 +582,7 @@ export const EmotionAnalyzer = () => {
                 </ul>
               </div>
               <div className="text-center">
-                <h3 className="font-bold text-purple-600 mb-2">ML Algorithms 🤖</h3>
+                <h3 className="font-bold text-blue-600 mb-2">ML Algorithms 🤖</h3>
                 <ul className="text-sm space-y-1">
                   <li>✅ Multi-class Emotion Classification</li>
                   <li>✅ Intensity Regression Models</li>
@@ -557,10 +591,19 @@ export const EmotionAnalyzer = () => {
                 </ul>
               </div>
               <div className="text-center">
-                <h3 className="font-bold text-purple-600 mb-2">Features 🌟</h3>
+                <h3 className="font-bold text-blue-600 mb-2">Languages 🌍</h3>
+                <ul className="text-sm space-y-1">
+                  <li>✅ 30+ Languages Support</li>
+                  <li>✅ Indian Regional Languages</li>
+                  <li>✅ English Transliteration</li>
+                  <li>✅ Southeast Asian Languages</li>
+                </ul>
+              </div>
+              <div className="text-center">
+                <h3 className="font-bold text-blue-600 mb-2">Features 🌟</h3>
                 <ul className="text-sm space-y-1">
                   <li>✅ 26 Comprehensive Emotions</li>
-                  <li>✅ 12 Language Support</li>
+                  <li>✅ Context-aware Generation</li>
                   <li>✅ Real-time Processing</li>
                   <li>✅ 100% Free Access</li>
                 </ul>
