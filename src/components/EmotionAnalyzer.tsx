@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,48 @@ interface Language {
   flag: string;
   transliteration?: boolean;
 }
+
+// Comprehensive emotions data
+const COMPREHENSIVE_EMOTIONS: EmotionData[] = [
+  // Basic Emotions
+  { name: 'Happy', emoji: '😊', intensity: 0, color: '#FFD700', category: 'Basic' },
+  { name: 'Sad', emoji: '😢', intensity: 0, color: '#4169E1', category: 'Basic' },
+  { name: 'Angry', emoji: '😡', intensity: 0, color: '#DC143C', category: 'Basic' },
+  { name: 'Fear', emoji: '😨', intensity: 0, color: '#800080', category: 'Basic' },
+  { name: 'Surprised', emoji: '😮', intensity: 0, color: '#FF69B4', category: 'Basic' },
+  { name: 'Disgusted', emoji: '🤢', intensity: 0, color: '#228B22', category: 'Basic' },
+  
+  // Social Emotions
+  { name: 'Excited', emoji: '🤗', intensity: 0, color: '#FF4500', category: 'Social' },
+  { name: 'Nervous', emoji: '😰', intensity: 0, color: '#9370DB', category: 'Social' },
+  { name: 'Confident', emoji: '😎', intensity: 0, color: '#1E90FF', category: 'Social' },
+  { name: 'Shy', emoji: '😊', intensity: 0, color: '#FFB6C1', category: 'Social' },
+  { name: 'Proud', emoji: '😌', intensity: 0, color: '#DAA520', category: 'Social' },
+  { name: 'Embarrassed', emoji: '😳', intensity: 0, color: '#FF1493', category: 'Social' },
+  
+  // Romantic Emotions
+  { name: 'Romantic', emoji: '💕', intensity: 0, color: '#FF69B4', category: 'Romantic' },
+  { name: 'Flirty', emoji: '😉', intensity: 0, color: '#FF1493', category: 'Romantic' },
+  { name: 'Passionate', emoji: '🔥', intensity: 0, color: '#DC143C', category: 'Romantic' },
+  { name: 'Affectionate', emoji: '🥰', intensity: 0, color: '#FF69B4', category: 'Romantic' },
+  
+  // Professional Emotions
+  { name: 'Professional', emoji: '💼', intensity: 0, color: '#2F4F4F', category: 'Professional' },
+  { name: 'Respectful', emoji: '🙏', intensity: 0, color: '#4682B4', category: 'Professional' },
+  { name: 'Formal', emoji: '👔', intensity: 0, color: '#000080', category: 'Professional' },
+  { name: 'Diplomatic', emoji: '🤝', intensity: 0, color: '#708090', category: 'Professional' },
+  
+  // Casual Emotions
+  { name: 'Casual', emoji: '😄', intensity: 0, color: '#32CD32', category: 'Casual' },
+  { name: 'Friendly', emoji: '🌟', intensity: 0, color: '#FFD700', category: 'Casual' },
+  { name: 'Humorous', emoji: '😂', intensity: 0, color: '#FF6347', category: 'Casual' },
+  { name: 'Playful', emoji: '😜', intensity: 0, color: '#FF69B4', category: 'Casual' },
+  
+  // Complex Emotions
+  { name: 'Apologetic', emoji: '🙏', intensity: 0, color: '#8B4513', category: 'Complex' },
+  { name: 'Grateful', emoji: '🙏', intensity: 0, color: '#FFD700', category: 'Complex' },
+  { name: 'Curious', emoji: '🤔', intensity: 0, color: '#FF6347', category: 'Complex' }
+];
 
 const LANGUAGES: Language[] = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
