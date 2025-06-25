@@ -65,82 +65,93 @@ const LANGUAGES: Language[] = [
   { code: 'tl', name: 'Filipino', flag: '🇵🇭' }
 ];
 
-// Language-specific transformations
+// Language-specific transformations with natural, modern speech patterns
 const LANGUAGE_TRANSFORMATIONS = {
   'hi': {
-    greetings: ['Namaste', 'Aap kaise hain', 'Main chahta hun'],
-    expressions: ['Bahut accha', 'Kya baat hai', 'Sach mein'],
-    endings: ['ji', 'saheb', 'bhai']
+    greetings: ['Hey yaar', 'Arre bhai', 'Boss suniye'],
+    expressions: ['Yaar honestly', 'Sachi mein', 'Bro trust me'],
+    endings: ['yaar', 'bhai', 'boss'],
+    modernPhrases: ['matlab', 'basically', 'like seriously'],
+    fillers: ['arre', 'waise', 'btw']
   },
   'te': {
-    greetings: ['Namaskaram', 'Ela unnaru', 'Nenu anukuntunna'],
-    expressions: ['Chala manchidi', 'Emi vishayam', 'Nijanga'],
-    endings: ['garu', 'anna', 'akka']
+    greetings: ['Hey bro', 'Anna listen', 'Ey ra'],
+    expressions: ['Seriously anna', 'Trust me bro', 'Honestly chepthunna'],
+    endings: ['ra', 'bro', 'anna'],
+    modernPhrases: ['basically', 'like', 'seriously'],
+    fillers: ['arre', 'ey', 'mari']
   },
   'ta': {
-    greetings: ['Vanakkam', 'Epadi irukeenga', 'Naan ninaikiren'],
-    expressions: ['Romba nalla', 'Enna vishayam', 'Unmaiya'],
-    endings: ['sir', 'madam', 'anna']
+    greetings: ['Hey da', 'Machan listen', 'Ey bro'],
+    expressions: ['Seriously da', 'Trust me machan', 'Honestly solren'],
+    endings: ['da', 'machan', 'bro'],
+    modernPhrases: ['basically', 'like totally', 'for real'],
+    fillers: ['ey', 'enna', 'appo']
   },
   'kn': {
-    greetings: ['Namaskara', 'Hegiddira', 'Naanu ansutte'],
-    expressions: ['Tumba chennagi', 'Enu vishaya', 'Satyavagi'],
-    endings: ['garu', 'appa', 'akka']
+    greetings: ['Hey guru', 'Bidu listen', 'Ey maga'],
+    expressions: ['Seriously guru', 'Trust me bidu', 'Honestly heltini'],
+    endings: ['guru', 'maga', 'bro'],
+    modernPhrases: ['basically', 'like', 'for real'],
+    fillers: ['ey', 'yeno', 'guru']
   },
   'ml': {
-    greetings: ['Namaskaram', 'Engane undu', 'Njan karuthunnu'],
-    expressions: ['Valare nannayi', 'Enthu vishayam', 'Sathyam'],
-    endings: ['sir', 'madam', 'chettan']
+    greetings: ['Hey chetta', 'Bro listen', 'Ey machane'],
+    expressions: ['Seriously chetta', 'Trust me bro', 'Honestly parayam'],
+    endings: ['chetta', 'machane', 'bro'],
+    modernPhrases: ['basically', 'like', 'for real'],
+    fillers: ['ey', 'entho', 'pinne']
   },
   'es': {
-    greetings: ['Hola', 'Cómo estás', 'Quiero decir'],
-    expressions: ['Muy bien', 'Qué tal', 'De verdad'],
-    endings: ['amigo', 'hermano', 'querido']
+    greetings: ['Oye hermano', 'Che pibe', 'Ey amigo'],
+    expressions: ['En serio bro', 'Te juro que', 'Posta que'],
+    endings: ['bro', 'hermano', 'che'],
+    modernPhrases: ['literal', 'tipo', 'osea'],
+    fillers: ['che', 'boludo', 'tipo']
   },
   'fr': {
-    greetings: ['Bonjour', 'Comment allez-vous', 'Je veux dire'],
-    expressions: ['Très bien', 'Qu\'est-ce que', 'Vraiment'],
-    endings: ['mon ami', 'ma chérie', 'monsieur']
+    greetings: ['Salut mec', 'Eh frérot', 'Coucou bro'],
+    expressions: ['Franchement mec', 'Je te jure', 'Sérieux bro'],
+    endings: ['mec', 'frérot', 'bro'],
+    modernPhrases: ['genre', 'style', 'carrément'],
+    fillers: ['bon', 'alors', 'quoi']
+  },
+  'de': {
+    greetings: ['Hey Alter', 'Yo Bro', 'Ey Digga'],
+    expressions: ['Echt jetzt Alter', 'Schwöre Bro', 'Kein Witz'],
+    endings: ['Alter', 'Bro', 'Digga'],
+    modernPhrases: ['voll', 'krass', 'echt'],
+    fillers: ['ey', 'yo', 'alter']
+  },
+  'pt': {
+    greetings: ['E aí mano', 'Oi brother', 'Salve parceiro'],
+    expressions: ['Sério mesmo', 'Te juro cara', 'Real talk'],
+    endings: ['mano', 'cara', 'brother'],
+    modernPhrases: ['tipo assim', 'na real', 'literalmente'],
+    fillers: ['né', 'tipo', 'cara']
+  },
+  'ru': {
+    greetings: ['Привет бро', 'Эй братан', 'Слушай парень'],
+    expressions: ['Серьёзно бро', 'Честно говорю', 'Реально братан'],
+    endings: ['бро', 'братан', 'парень'],
+    modernPhrases: ['типа', 'короче', 'блин'],
+    fillers: ['ну', 'вот', 'короче']
+  },
+  'ja': {
+    greetings: ['よー', 'おい', 'ねえ'],
+    expressions: ['マジで', 'ガチで', '本当に'],
+    endings: ['よ', 'だよ', 'じゃん'],
+    modernPhrases: ['やばい', 'すげー', 'めっちゃ'],
+    fillers: ['えー', 'なんか', 'でも']
+  },
+  'ko': {
+    greetings: ['야 형', '어이 브로', '이봐'],
+    expressions: ['진짜로', '완전', '대박'],
+    endings: ['형', '야', '지'],
+    modernPhrases: ['개', '진짜', '완전'],
+    fillers: ['음', '그', '뭐']
   }
 };
-
-const COMPREHENSIVE_EMOTIONS: EmotionData[] = [
-  // Primary Emotions
-  { name: 'Happy', emoji: '😊', intensity: 0, color: 'bg-blue-500', category: 'Primary' },
-  { name: 'Sad', emoji: '😢', intensity: 0, color: 'bg-blue-400', category: 'Primary' },
-  { name: 'Angry', emoji: '😡', intensity: 0, color: 'bg-blue-600', category: 'Primary' },
-  { name: 'Fear', emoji: '😨', intensity: 0, color: 'bg-blue-500', category: 'Primary' },
-  { name: 'Surprise', emoji: '😲', intensity: 0, color: 'bg-blue-400', category: 'Primary' },
-  { name: 'Disgust', emoji: '🤢', intensity: 0, color: 'bg-blue-600', category: 'Primary' },
-  
-  // Social Emotions
-  { name: 'Romantic', emoji: '💕', intensity: 0, color: 'bg-blue-500', category: 'Social' },
-  { name: 'Flirty', emoji: '😉', intensity: 0, color: 'bg-blue-400', category: 'Social' },
-  { name: 'Nervous', emoji: '😰', intensity: 0, color: 'bg-blue-600', category: 'Social' },
-  { name: 'Excited', emoji: '🤗', intensity: 0, color: 'bg-blue-500', category: 'Social' },
-  { name: 'Empathetic', emoji: '🤝', intensity: 0, color: 'bg-blue-400', category: 'Social' },
-  { name: 'Apologetic', emoji: '🙏', intensity: 0, color: 'bg-blue-600', category: 'Social' },
-  
-  // Professional Emotions
-  { name: 'Professional', emoji: '💼', intensity: 0, color: 'bg-blue-500', category: 'Professional' },
-  { name: 'Confident', emoji: '💪', intensity: 0, color: 'bg-blue-400', category: 'Professional' },
-  { name: 'Diplomatic', emoji: '🤵', intensity: 0, color: 'bg-blue-600', category: 'Professional' },
-  { name: 'Assertive', emoji: '👑', intensity: 0, color: 'bg-blue-500', category: 'Professional' },
-  
-  // Casual Emotions
-  { name: 'Casual', emoji: '😎', intensity: 0, color: 'bg-blue-400', category: 'Casual' },
-  { name: 'Humorous', emoji: '😄', intensity: 0, color: 'bg-blue-600', category: 'Casual' },
-  { name: 'Sarcastic', emoji: '😏', intensity: 0, color: 'bg-blue-500', category: 'Casual' },
-  { name: 'Friendly', emoji: '🌟', intensity: 0, color: 'bg-blue-400', category: 'Casual' },
-  
-  // Complex Emotions
-  { name: 'Melancholy', emoji: '🌙', intensity: 0, color: 'bg-blue-600', category: 'Complex' },
-  { name: 'Euphoric', emoji: '🚀', intensity: 0, color: 'bg-blue-500', category: 'Complex' },
-  { name: 'Contemplative', emoji: '🤔', intensity: 0, color: 'bg-blue-400', category: 'Complex' },
-  { name: 'Passionate', emoji: '🔥', intensity: 0, color: 'bg-blue-600', category: 'Complex' },
-  { name: 'Serene', emoji: '🕊️', intensity: 0, color: 'bg-blue-500', category: 'Complex' },
-  { name: 'Mischievous', emoji: '😈', intensity: 0, color: 'bg-blue-400', category: 'Complex' }
-];
 
 // Advanced emotion transformation templates
 const EMOTION_TRANSFORMATIONS = {
@@ -244,7 +255,7 @@ export const EmotionAnalyzer = () => {
   };
 
   const applyLanguageTransformation = (text: string, languageCode: string, versionNumber: number): string => {
-    console.log(`Applying language transformation: ${languageCode} for version ${versionNumber}`);
+    console.log(`Applying modern language transformation: ${languageCode} for version ${versionNumber}`);
     
     if (languageCode === 'en') return text;
     
@@ -253,21 +264,37 @@ export const EmotionAnalyzer = () => {
 
     let transformedText = text;
     
-    // Apply language-specific transformations based on version
-    if (versionNumber === 1 && langTransform.greetings.length > 0) {
-      transformedText = `${langTransform.greetings[0]}, ${transformedText}`;
-    } else if (versionNumber === 2 && langTransform.expressions.length > 0) {
-      transformedText = `${langTransform.expressions[0]}! ${transformedText}`;
-    } else if (versionNumber === 3 && langTransform.greetings.length > 1) {
-      transformedText = `${langTransform.greetings[1]}, ${transformedText}`;
-    } else if (versionNumber === 4 && langTransform.expressions.length > 1) {
-      transformedText = `${langTransform.expressions[1]}, ${transformedText}`;
+    // Apply modern, natural language transformations
+    if (versionNumber === 1) {
+      // Casual greeting + modern expression
+      const greeting = langTransform.greetings[0];
+      const modernPhrase = langTransform.modernPhrases[0];
+      transformedText = `${greeting}, ${modernPhrase} ${transformedText}`;
+    } else if (versionNumber === 2) {
+      // Modern expression + filler words
+      const expression = langTransform.expressions[0];
+      const filler = langTransform.fillers[0];
+      transformedText = `${filler} ${expression}, ${transformedText}`;
+    } else if (versionNumber === 3) {
+      // Different greeting + casual ending
+      const greeting = langTransform.greetings[1] || langTransform.greetings[0];
+      const ending = langTransform.endings[0];
+      transformedText = `${greeting}, ${transformedText} ${ending}`;
+    } else if (versionNumber === 4) {
+      // Mix of modern phrases and expressions
+      const expression = langTransform.expressions[1] || langTransform.expressions[0];
+      const modernPhrase = langTransform.modernPhrases[1] || langTransform.modernPhrases[0];
+      const ending = langTransform.endings[1] || langTransform.endings[0];
+      transformedText = `${expression} ${modernPhrase} ${transformedText} ${ending}`;
     }
 
-    // Add language-specific endings
-    if (langTransform.endings.length > 0 && Math.random() > 0.5) {
-      const ending = langTransform.endings[versionNumber % langTransform.endings.length];
-      transformedText = `${transformedText} ${ending}`;
+    // Add some casual contractions and modern speech patterns
+    if (languageCode === 'hi') {
+      transformedText = transformedText.replace(/है/g, 'hai').replace(/करना/g, 'karna');
+    } else if (languageCode === 'te') {
+      transformedText = transformedText.replace(/undi/g, 'undu').replace(/chestha/g, 'chesta');
+    } else if (languageCode === 'ta') {
+      transformedText = transformedText.replace(/irukku/g, 'iruku').replace(/pannu/g, 'panu');
     }
 
     return transformedText;
