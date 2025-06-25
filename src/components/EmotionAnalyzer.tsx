@@ -23,6 +23,7 @@ interface RephrasedVersion {
   confidence: number;
   aiModel: string;
   emotionBlend: string[];
+  language: string;
 }
 
 interface Language {
@@ -63,6 +64,45 @@ const LANGUAGES: Language[] = [
   { code: 'ms', name: 'Bahasa Melayu', flag: '🇲🇾' },
   { code: 'tl', name: 'Filipino', flag: '🇵🇭' }
 ];
+
+// Language-specific transformations
+const LANGUAGE_TRANSFORMATIONS = {
+  'hi': {
+    greetings: ['Namaste', 'Aap kaise hain', 'Main chahta hun'],
+    expressions: ['Bahut accha', 'Kya baat hai', 'Sach mein'],
+    endings: ['ji', 'saheb', 'bhai']
+  },
+  'te': {
+    greetings: ['Namaskaram', 'Ela unnaru', 'Nenu anukuntunna'],
+    expressions: ['Chala manchidi', 'Emi vishayam', 'Nijanga'],
+    endings: ['garu', 'anna', 'akka']
+  },
+  'ta': {
+    greetings: ['Vanakkam', 'Epadi irukeenga', 'Naan ninaikiren'],
+    expressions: ['Romba nalla', 'Enna vishayam', 'Unmaiya'],
+    endings: ['sir', 'madam', 'anna']
+  },
+  'kn': {
+    greetings: ['Namaskara', 'Hegiddira', 'Naanu ansutte'],
+    expressions: ['Tumba chennagi', 'Enu vishaya', 'Satyavagi'],
+    endings: ['garu', 'appa', 'akka']
+  },
+  'ml': {
+    greetings: ['Namaskaram', 'Engane undu', 'Njan karuthunnu'],
+    expressions: ['Valare nannayi', 'Enthu vishayam', 'Sathyam'],
+    endings: ['sir', 'madam', 'chettan']
+  },
+  'es': {
+    greetings: ['Hola', 'Cómo estás', 'Quiero decir'],
+    expressions: ['Muy bien', 'Qué tal', 'De verdad'],
+    endings: ['amigo', 'hermano', 'querido']
+  },
+  'fr': {
+    greetings: ['Bonjour', 'Comment allez-vous', 'Je veux dire'],
+    expressions: ['Très bien', 'Qu\'est-ce que', 'Vraiment'],
+    endings: ['mon ami', 'ma chérie', 'monsieur']
+  }
+};
 
 const COMPREHENSIVE_EMOTIONS: EmotionData[] = [
   // Primary Emotions
@@ -203,18 +243,34 @@ export const EmotionAnalyzer = () => {
     return emotions.filter(e => e.intensity > 0);
   };
 
-  const addEmojisToText = (text: string, dominantEmotion: string): string => {
-    const emotionEmojis = EMOTION_EMOJIS[dominantEmotion as keyof typeof EMOTION_EMOJIS];
-    if (!emotionEmojis) return text;
+  const applyLanguageTransformation = (text: string, languageCode: string, versionNumber: number): string => {
+    console.log(`Applying language transformation: ${languageCode} for version ${versionNumber}`);
+    
+    if (languageCode === 'en') return text;
+    
+    const langTransform = LANGUAGE_TRANSFORMATIONS[languageCode as keyof typeof LANGUAGE_TRANSFORMATIONS];
+    if (!langTransform) return text;
 
-    const randomEmoji = emotionEmojis[Math.floor(Math.random() * emotionEmojis.length)];
+    let transformedText = text;
     
-    // Add emoji with probability
-    if (Math.random() > 0.3) {
-      return `${text} ${randomEmoji}`;
+    // Apply language-specific transformations based on version
+    if (versionNumber === 1 && langTransform.greetings.length > 0) {
+      transformedText = `${langTransform.greetings[0]}, ${transformedText}`;
+    } else if (versionNumber === 2 && langTransform.expressions.length > 0) {
+      transformedText = `${langTransform.expressions[0]}! ${transformedText}`;
+    } else if (versionNumber === 3 && langTransform.greetings.length > 1) {
+      transformedText = `${langTransform.greetings[1]}, ${transformedText}`;
+    } else if (versionNumber === 4 && langTransform.expressions.length > 1) {
+      transformedText = `${langTransform.expressions[1]}, ${transformedText}`;
     }
-    
-    return text;
+
+    // Add language-specific endings
+    if (langTransform.endings.length > 0 && Math.random() > 0.5) {
+      const ending = langTransform.endings[versionNumber % langTransform.endings.length];
+      transformedText = `${transformedText} ${ending}`;
+    }
+
+    return transformedText;
   };
 
   const transformTextWithEmotion = (text: string, emotion: string, intensity: number, versionNumber: number): string => {
@@ -225,7 +281,7 @@ export const EmotionAnalyzer = () => {
     
     console.log(`Transforming with ${emotion} at ${intensity}% for version ${versionNumber}`);
 
-    // Apply word replacements based on intensity (more aggressive for higher intensity)
+    // Apply word replacements based on intensity
     if (intensity > 20) {
       Object.entries(transformation.replacements).forEach(([from, to]) => {
         const regex = new RegExp(`\\b${from}\\b`, 'gi');
@@ -233,29 +289,35 @@ export const EmotionAnalyzer = () => {
       });
     }
 
-    // Different transformation strategies for each version
+    // Quadratic Voting Algorithm - Version 1
     if (versionNumber === 1) {
-      // Version 1: Add starter phrase for high intensity
-      if (intensity > 50 && transformation.starters) {
-        const starter = transformation.starters[0]; // Use first starter
+      const quadraticWeight = Math.sqrt(intensity / 100);
+      if (quadraticWeight > 0.5 && transformation.starters) {
+        const starter = transformation.starters[0];
         transformedText = `${starter} ${transformedText}`;
       }
-    } else if (versionNumber === 2) {
-      // Version 2: Add intensifiers
-      if (intensity > 30 && transformation.intensifiers) {
+    }
+    // Geometric Voting Algorithm - Version 2  
+    else if (versionNumber === 2) {
+      const geometricWeight = Math.pow(intensity / 100, 1.5);
+      if (geometricWeight > 0.3 && transformation.intensifiers) {
         const intensifier = transformation.intensifiers[Math.floor(Math.random() * transformation.intensifiers.length)];
         transformedText = `I ${intensifier} wonder ${transformedText}`;
       }
-    } else if (versionNumber === 3) {
-      // Version 3: Use different starter
-      if (intensity > 40 && transformation.starters && transformation.starters.length > 1) {
-        const starter = transformation.starters[1]; // Use second starter
+    }
+    // Diplomatic Consensus - Version 3
+    else if (versionNumber === 3) {
+      const diplomaticThreshold = 40 + (intensity * 0.2); // Adaptive threshold
+      if (intensity > diplomaticThreshold && transformation.starters && transformation.starters.length > 1) {
+        const starter = transformation.starters[1];
         transformedText = `${starter} ${transformedText}`;
       }
-    } else if (versionNumber === 4) {
-      // Version 4: Most intense transformation
-      if (intensity > 60 && transformation.starters && transformation.starters.length > 2) {
-        const starter = transformation.starters[2] || transformation.starters[0]; // Use third starter or fallback
+    }
+    // Ranked Choice - Version 4
+    else if (versionNumber === 4) {
+      const rankedScore = (intensity / 100) * (versionNumber / 4);
+      if (rankedScore > 0.6 && transformation.starters && transformation.starters.length > 2) {
+        const starter = transformation.starters[2] || transformation.starters[0];
         const intensifier = transformation.intensifiers ? transformation.intensifiers[0] : '';
         transformedText = `${starter} I ${intensifier} need to know ${transformedText}`;
       }
@@ -266,27 +328,29 @@ export const EmotionAnalyzer = () => {
 
   const simulateAdvancedAI = async (text: string, selectedEmotions: EmotionData[], contextInfo: string, language: string): Promise<RephrasedVersion[]> => {
     const aiModels = [
-      'Neural Transformer v3.2',
-      'Emotion-GPT Enhanced', 
-      'Sentiment-BERT Pro',
-      'Contextual-RNN Advanced'
+      'Quadratic Neural Engine v2.1',
+      'Geometric Language Model Pro', 
+      'Diplomatic Consensus AI',
+      'Ranked Choice Transformer'
     ];
 
     const versions: RephrasedVersion[] = [];
-
-    // Sort emotions by intensity to get dominant emotion
     const sortedEmotions = selectedEmotions.sort((a, b) => b.intensity - a.intensity);
     const dominantEmotion = sortedEmotions[0];
 
     console.log('Dominant emotion:', dominantEmotion);
+    console.log('Selected language:', language);
 
     for (let i = 0; i < 4; i++) {
       let rephrasedText = text;
       
       const emotionBlend = selectedEmotions.map(e => `${e.name}(${e.intensity}%)`);
       
-      // Apply primary emotion transformation with version-specific logic
+      // Apply primary emotion transformation with advanced algorithms
       rephrasedText = transformTextWithEmotion(rephrasedText, dominantEmotion.name, dominantEmotion.intensity, i + 1);
+
+      // Apply language-specific transformations
+      rephrasedText = applyLanguageTransformation(rephrasedText, language, i + 1);
 
       // Apply context-based modifications
       if (contextInfo.toLowerCase().includes('shy') || contextInfo.toLowerCase().includes('nervous')) {
@@ -301,8 +365,8 @@ export const EmotionAnalyzer = () => {
 
       // Add emojis based on emotion and version
       const emotionEmojis = EMOTION_EMOJIS[dominantEmotion.name as keyof typeof EMOTION_EMOJIS];
-      if (emotionEmojis && Math.random() > 0.2) {
-        const emojiIndex = i % emotionEmojis.length; // Different emoji for each version
+      if (emotionEmojis && Math.random() > 0.3) {
+        const emojiIndex = i % emotionEmojis.length;
         rephrasedText = `${rephrasedText} ${emotionEmojis[emojiIndex]}`;
       }
 
@@ -314,21 +378,18 @@ export const EmotionAnalyzer = () => {
 
       // Version-specific final adjustments
       if (i === 1) {
-        // More casual version
         rephrasedText = rephrasedText.replace(/\bI am\b/gi, 'I\'m');
         rephrasedText = rephrasedText.replace(/\bcannot\b/gi, 'can\'t');
       } else if (i === 2) {
-        // More formal version  
         rephrasedText = rephrasedText.replace(/\bI'm\b/gi, 'I am');
         rephrasedText = rephrasedText.replace(/\bcan't\b/gi, 'cannot');
       } else if (i === 3) {
-        // More expressive version
         if (dominantEmotion.intensity > 50) {
           rephrasedText = rephrasedText.replace(/\./g, '!');
         }
       }
 
-      console.log(`Generated version ${i + 1}:`, rephrasedText);
+      console.log(`Generated version ${i + 1} in ${language}:`, rephrasedText);
 
       versions.push({
         id: i + 1,
@@ -336,7 +397,8 @@ export const EmotionAnalyzer = () => {
         dominantEmotion: dominantEmotion.name,
         confidence: Math.round(85 + Math.random() * 15),
         aiModel: aiModels[i],
-        emotionBlend: emotionBlend
+        emotionBlend: emotionBlend,
+        language: language
       });
     }
 
@@ -563,6 +625,9 @@ export const EmotionAnalyzer = () => {
                           <Badge variant="outline" className="border-green-500 text-green-600">
                             {version.confidence}% confidence
                           </Badge>
+                          <Badge variant="outline" className="border-purple-500 text-purple-600">
+                            {selectedLanguageData?.flag} {selectedLanguageData?.name}
+                          </Badge>
                         </div>
                         <Button
                           size="sm"
@@ -580,6 +645,7 @@ export const EmotionAnalyzer = () => {
                       <div className="text-sm text-gray-600 space-y-1">
                         <div>AI Model: {version.aiModel}</div>
                         <div>Emotion Blend: {version.emotionBlend.join(', ')}</div>
+                        <div>Language: {version.language}</div>
                       </div>
                     </div>
                   ))}
@@ -605,10 +671,10 @@ export const EmotionAnalyzer = () => {
               <div className="text-center">
                 <h3 className="font-bold text-blue-600 mb-2">Neural Networks 🔬</h3>
                 <ul className="text-sm space-y-1">
-                  <li>✅ Transformer Architecture</li>
-                  <li>✅ BERT-based Sentiment Analysis</li>
-                  <li>✅ RNN Emotion Processing</li>
-                  <li>✅ CNN Pattern Recognition</li>
+                  <li>✅ Quadratic Voting Algorithm</li>
+                  <li>✅ Geometric Emotion Scaling</li>
+                  <li>✅ Diplomatic Consensus Engine</li>
+                  <li>✅ Ranked Choice Processing</li>
                 </ul>
               </div>
               <div className="text-center">
@@ -617,7 +683,7 @@ export const EmotionAnalyzer = () => {
                   <li>✅ Multi-class Emotion Classification</li>
                   <li>✅ Intensity Regression Models</li>
                   <li>✅ Context-aware Processing</li>
-                  <li>✅ Ensemble Learning Methods</li>
+                  <li>✅ Language-specific Adaptation</li>
                 </ul>
               </div>
               <div className="text-center">
