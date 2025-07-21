@@ -1,8 +1,8 @@
 
-import { EmotionAnalyzer } from "@/components/EmotionAnalyzer";
+import { SamKeyboardDemo } from "@/components/SamKeyboardDemo";
 
 const Index = () => {
-  return <EmotionAnalyzer />;
+  return <SamKeyboardDemo />;
 };
 
 export default Index;
