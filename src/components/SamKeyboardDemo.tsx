@@ -36,17 +36,30 @@ interface EmotionSetting {
   value: number;
   emoji: string;
   color: string;
+  category: string;
 }
 
 const LANGUAGES: Language[] = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'hi', name: 'Hindi', flag: '🇮🇳', transliteration: true },
-  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
-  { code: 'fr', name: 'French', flag: '🇫🇷' },
-  { code: 'de', name: 'German', flag: '🇩🇪' },
-  { code: 'ja', name: 'Japanese', flag: '🇯🇵' },
-  { code: 'ko', name: 'Korean', flag: '🇰🇷' },
-  { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+  { code: 'pt', name: 'Português', flag: '🇵🇹' },
+  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+  { code: 'ja', name: '日本語', flag: '🇯🇵' },
+  { code: 'ko', name: '한국어', flag: '🇰🇷' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' },
+  { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+  { code: 'hi', name: 'हिन्दी (Hindi)', flag: '🇮🇳', transliteration: true },
+  { code: 'te', name: 'తెలుగు (Telugu)', flag: '🇮🇳', transliteration: true },
+  { code: 'ta', name: 'தமிழ் (Tamil)', flag: '🇮🇳', transliteration: true },
+  { code: 'kn', name: 'ಕನ್ನಡ (Kannada)', flag: '🇮🇳', transliteration: true },
+  { code: 'ml', name: 'മലയാളം (Malayalam)', flag: '🇮🇳', transliteration: true },
+  { code: 'bn', name: 'বাংলা (Bengali)', flag: '🇮🇳', transliteration: true },
+  { code: 'gu', name: 'ગુજરાતી (Gujarati)', flag: '🇮🇳', transliteration: true },
+  { code: 'mr', name: 'मराठी (Marathi)', flag: '🇮🇳', transliteration: true },
+  { code: 'pa', name: 'ਪੰਜਾਬੀ (Punjabi)', flag: '🇮🇳', transliteration: true },
 ];
 
 const KEYBOARD_LAYOUTS = [
@@ -71,15 +84,41 @@ export const SamKeyboardDemo = () => {
   const [selectedTone, setSelectedTone] = useState('casual');
   const [genzIntensity, setGenzIntensity] = useState([50]);
   const [emotions, setEmotions] = useState<EmotionSetting[]>([
-    { name: 'Happy', value: 70, emoji: '😊', color: '#FFD700' },
-    { name: 'Confident', value: 60, emoji: '😎', color: '#1E90FF' },
-    { name: 'Excited', value: 40, emoji: '🤗', color: '#FF4500' },
-    { name: 'Love', value: 30, emoji: '💕', color: '#FF69B4' }
+    // Basic Emotions
+    { name: 'Happy', value: 70, emoji: '😊', color: '#FFD700', category: 'Basic' },
+    { name: 'Sad', value: 0, emoji: '😢', color: '#4169E1', category: 'Basic' },
+    { name: 'Angry', value: 0, emoji: '😡', color: '#DC143C', category: 'Basic' },
+    { name: 'Fear', value: 0, emoji: '😨', color: '#800080', category: 'Basic' },
+    
+    // Social Emotions
+    { name: 'Excited', value: 40, emoji: '🤗', color: '#FF4500', category: 'Social' },
+    { name: 'Nervous', value: 0, emoji: '😰', color: '#9370DB', category: 'Social' },
+    { name: 'Confident', value: 60, emoji: '😎', color: '#1E90FF', category: 'Social' },
+    { name: 'Shy', value: 0, emoji: '😊', color: '#FFB6C1', category: 'Social' },
+    
+    // Romantic Emotions
+    { name: 'Romantic', value: 30, emoji: '💕', color: '#FF69B4', category: 'Romantic' },
+    { name: 'Flirty', value: 0, emoji: '😉', color: '#FF1493', category: 'Romantic' },
+    { name: 'Passionate', value: 0, emoji: '🔥', color: '#DC143C', category: 'Romantic' },
+    
+    // Professional Emotions
+    { name: 'Professional', value: 0, emoji: '💼', color: '#2F4F4F', category: 'Professional' },
+    { name: 'Respectful', value: 0, emoji: '🙏', color: '#4682B4', category: 'Professional' },
+    { name: 'Formal', value: 0, emoji: '👔', color: '#000080', category: 'Professional' },
+    
+    // Casual Emotions
+    { name: 'Casual', value: 0, emoji: '😄', color: '#32CD32', category: 'Casual' },
+    { name: 'Friendly', value: 0, emoji: '🌟', color: '#FFD700', category: 'Casual' },
+    { name: 'Humorous', value: 0, emoji: '😂', color: '#FF6347', category: 'Casual' },
   ]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showVirtualKeyboard, setShowVirtualKeyboard] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [contextText, setContextText] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
+
+  const categories = ['All', ...new Set(emotions.map(e => e.category))];
 
   // Mock AI predictions and suggestions
   useEffect(() => {
@@ -416,37 +455,78 @@ export const SamKeyboardDemo = () => {
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="emotions" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
+                  <TabsList className="grid w-full grid-cols-4">
                     <TabsTrigger value="emotions">Emotions</TabsTrigger>
+                    <TabsTrigger value="context">Context</TabsTrigger>
                     <TabsTrigger value="tone">Tone</TabsTrigger>
                     <TabsTrigger value="genz">Gen-Z</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="emotions" className="space-y-4">
-                    {emotions.map((emotion, index) => (
-                      <div key={emotion.name} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm flex items-center gap-1">
-                            <span>{emotion.emoji}</span>
-                            {emotion.name}
-                          </span>
-                          <span className="text-sm text-muted-foreground">
-                            {emotion.value}%
-                          </span>
-                        </div>
-                        <Slider
-                          value={[emotion.value]}
-                          onValueChange={(value) => {
-                            const newEmotions = [...emotions];
-                            newEmotions[index].value = value[0];
-                            setEmotions(newEmotions);
-                          }}
-                          max={100}
-                          step={5}
-                          className="w-full"
-                        />
-                      </div>
-                    ))}
+                    {/* Category Filter */}
+                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Filter by category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category} {category !== 'All' && `(${emotions.filter(e => e.category === category).length})`}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Emotion Sliders */}
+                    <div className="max-h-80 overflow-y-auto space-y-3">
+                      {emotions
+                        .filter(emotion => selectedCategory === 'All' || emotion.category === selectedCategory)
+                        .map((emotion, index) => {
+                          const globalIndex = emotions.findIndex(e => e.name === emotion.name);
+                          return (
+                            <div key={emotion.name} className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm flex items-center gap-1">
+                                  <span>{emotion.emoji}</span>
+                                  {emotion.name}
+                                  <Badge variant="outline" className="text-xs">
+                                    {emotion.category}
+                                  </Badge>
+                                </span>
+                                <span className="text-sm text-muted-foreground">
+                                  {emotion.value}%
+                                </span>
+                              </div>
+                              <Slider
+                                value={[emotion.value]}
+                                onValueChange={(value) => {
+                                  const newEmotions = [...emotions];
+                                  newEmotions[globalIndex].value = value[0];
+                                  setEmotions(newEmotions);
+                                }}
+                                max={100}
+                                step={5}
+                                className="w-full"
+                              />
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="context" className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Context & Situation</label>
+                      <Textarea
+                        value={contextText}
+                        onChange={(e) => setContextText(e.target.value)}
+                        placeholder="Describe the situation or context for better AI suggestions..."
+                        className="min-h-20"
+                      />
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Adding context helps Sam Keyboard provide more accurate and appropriate suggestions.
+                    </div>
                   </TabsContent>
                   
                   <TabsContent value="tone" className="space-y-4">
